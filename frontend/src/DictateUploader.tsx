@@ -10,7 +10,7 @@ export default function MicRecorder() {
   const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     mediaRecorderRef.current = new MediaRecorder(stream);
-    mediaRecorderRef.current.ondataavailable = e => chunks.current.push(e.data);
+    mediaRecorderRef.current.ondataavailable = (e) => chunks.current.push(e.data);
     mediaRecorderRef.current.onstop = handleStop;
     chunks.current = [];
     mediaRecorderRef.current.start();
@@ -29,11 +29,21 @@ export default function MicRecorder() {
     const form = new FormData();
     form.append("audio", file);
 
-    const res = await axios.post("http://localhost:3000/dictate/upload", form, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    try {
+      const res = await axios.post(
+        "https://arabic-dictation-app.onrender.com/dictate/upload",
+        form,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
-    setAudioUrl(`http://localhost:3000${res.data.url}`);
+      // ✅ Fix here: use res.data.url directly (it's already a full URL)
+      setAudioUrl(res.data.url);
+    } catch (err) {
+      console.error("Upload failed:", err);
+      alert("Failed to transcribe the audio.");
+    }
   };
 
   return (
@@ -44,9 +54,13 @@ export default function MicRecorder() {
 
       {audioUrl && (
         <p>
-          ✅ Done! <a href={audioUrl} target="_blank" rel="noreferrer">Download Word File</a>
+          ✅ Done!{" "}
+          <a href={audioUrl} target="_blank" rel="noreferrer">
+            Download Word File
+          </a>
         </p>
       )}
     </div>
   );
 }
+
