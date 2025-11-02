@@ -19,9 +19,9 @@ const __dirname = dirname(__filename);
 const app = express();
 app.use(express.json());
 
-// define absolute folders for hosts that run from a different CWD
-const uploadsDir = path.join(__dirname, "uploads");
-const outputsDir = path.join(__dirname, "outputs");
+// Use Render’s writable temp directory
+const uploadsDir = path.join("/tmp", "uploads");
+const outputsDir = path.join("/tmp", "outputs");
 
 app.use("/outputs", express.static(outputsDir));
 app.use(cors());
