@@ -4,20 +4,18 @@ FROM node:20
 # Set working directory
 WORKDIR /usr/src/app
 
-# Copy only backend first (so context is right)
+# Copy package files and install deps
 COPY backend/package*.json ./
-
-# Install production dependencies
 RUN npm install --omit=dev
 
-# Copy the rest of the backend
+# Copy backend source code
 COPY backend ./
 
-# Make sure uploads and outputs directories exist
+# Ensure folders exist
 RUN mkdir -p uploads outputs
 
-# Expose port 3000
+# Expose port
 EXPOSE 3000
 
-# Start using ts-node, pointing to the backend/index.ts
-CMD ["npx", "ts-node", "backend/index.ts"]
+# Run the app
+CMD ["npx", "ts-node", "index.ts"]
