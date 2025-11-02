@@ -21,7 +21,7 @@ FROM node:20
 WORKDIR /usr/src/app
 
 # Copy only the built output from builder
-COPY --from=builder /usr/src/app/dist ./dist
+# COPY --from=builder /usr/src/app/dist ./dist
 COPY backend/uploads ./uploads
 COPY backend/outputs ./outputs
 #COPY backend/.env .env
