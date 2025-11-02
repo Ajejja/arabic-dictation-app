@@ -1,0 +1,26 @@
+{
+  "type": "module",
+  "scripts": {
+    "start": "ts-node index.ts",
+    "dev": "npx ts-node-dev --respawn index.ts"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "docx": "^8.0.0",
+    "dotenv": "^17.2.3",
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1",
+    "openai": "^4.28.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.5",
+    "@types/multer": "^2.0.0",
+    "@types/node": "^24.9.2",
+    "@types/uuid": "^10.0.0",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.4.0"
+  }
+}
