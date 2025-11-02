@@ -24,7 +24,7 @@ WORKDIR /usr/src/app
 COPY --from=builder /usr/src/app/dist ./dist
 COPY backend/uploads ./uploads
 COPY backend/outputs ./outputs
-COPY backend/.env .env
+#COPY backend/.env .env
 
 # Install only production dependencies
 COPY backend/package*.json ./
