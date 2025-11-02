@@ -3,26 +3,26 @@ FROM node:20
 
 WORKDIR /usr/src/app
 
-# Copy dependency files first
+# Copy backend package files
 COPY backend/package*.json ./
 
-# Install all dependencies (including dev, so we get typescript)
+# Install dependencies (including dev to get TypeScript)
 RUN npm install
 
-# Copy the rest of the backend code
+# Copy the backend code
 COPY backend ./
 
-# Compile TypeScript to JavaScript
-RUN npx tsc
+# Compile TypeScript (note: this runs inside /usr/src/app)
+RUN npx tsc --project tsconfig.json
 
-# Clean up: remove devDependencies to reduce image size
+# Remove dev dependencies for smaller image
 RUN npm prune --production
 
-# Create needed folders
+# Create necessary folders
 RUN mkdir -p uploads outputs
 
-# Expose your app port
+# Expose app port
 EXPOSE 3000
 
-# Start the app (pointing to compiled JS)
+# Start the compiled JS file (compiled inside /usr/src/app)
 CMD ["node", "dist/index.js"]
