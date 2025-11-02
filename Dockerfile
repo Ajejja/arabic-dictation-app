@@ -1,34 +1,23 @@
-# Stage 1: build
-FROM node:20 AS builder
-
-WORKDIR /usr/src/app
-
-# Copy backend package files
-COPY backend/package*.json ./
-
-# Install all dependencies
-RUN npm install
-
-# Copy the backend source
-COPY backend ./
-
-# Compile TypeScript to JS
-RUN npx tsc
-
-# Stage 2: runtime
+# Use Node.js 20
 FROM node:20
 
+# Set working directory
 WORKDIR /usr/src/app
 
-# Copy only the built output from builder
-# COPY --from=builder /usr/src/app/dist ./dist
-COPY backend/uploads ./uploads
-COPY backend/outputs ./outputs
-#COPY backend/.env .env
-
-# Install only production dependencies
+# Copy only backend first (so context is right)
 COPY backend/package*.json ./
+
+# Install production dependencies
 RUN npm install --omit=dev
 
+# Copy the rest of the backend
+COPY backend ./
+
+# Make sure uploads and outputs directories exist
+RUN mkdir -p uploads outputs
+
+# Expose port 3000
 EXPOSE 3000
-CMD ["npx", "ts-node", "index.ts"]
+
+# Start using ts-node, pointing to the backend/index.ts
+CMD ["npx", "ts-node", "backend/index.ts"]
