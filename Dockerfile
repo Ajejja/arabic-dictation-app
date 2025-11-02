@@ -1,19 +1,31 @@
-# Builder stage
-FROM node:18-alpine AS builder
+# -----------------------------
+# Stage 1 - Build
+# -----------------------------
+FROM node:20 AS builder
 WORKDIR /usr/src/app
-COPY package.json package-lock.json* ./
-RUN npm ci
-COPY . .
-RUN npm run build
 
-# Runner stage
-FROM node:18-alpine
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npx tsc
+
+# -----------------------------
+# Stage 2 - Production
+# -----------------------------
+FROM node:20
 WORKDIR /usr/src/app
-COPY package.json package-lock.json* ./
-RUN npm ci --only=production
+
+COPY package*.json ./
+RUN npm install --only=production
+
+# Copy compiled JS files from builder
 COPY --from=builder /usr/src/app/dist ./dist
-# keep uploads/outputs dirs present (empty) so app has them
-RUN mkdir -p backend/uploads backend/outputs
+
+# Ensure uploads & outputs directories exist
+RUN mkdir -p uploads outputs
+
+# Expose the same port your app uses
 EXPOSE 3000
-ENV NODE_ENV=production
-CMD ["node", "dist/backend/index.js"]
+
+# Start your backend app
+CMD ["node", "dist/index.js"]
